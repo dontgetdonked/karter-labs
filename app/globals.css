@@ -12,8 +12,10 @@
   --color-surface: #f4f4f5;
   --color-line: #e6e6e9;
   --color-line-strong: #d2d2d7;
-  --color-faint: #a1a1aa;
-  --color-muted: #6d6d76;
+  /* Both grey text tones clear WCAG AA (4.5:1) on paper, paper-2 and surface:
+     faint ≈ 5.0:1 on white, muted ≈ 7.7:1. Do not lighten them. */
+  --color-faint: #6e6e77;
+  --color-muted: #52525b;
   --color-ink-2: #18181b;
   --color-ink: #09090b;
 

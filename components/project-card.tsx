@@ -25,8 +25,19 @@ export function DemoBadge({ className }: { className?: string }) {
  * lives behind a native <details>, which also records the `project_viewed`
  * analytics event.
  */
-export function ProjectCard({ project, className }: { project: Project; className?: string }) {
+export function ProjectCard({
+  project,
+  className,
+  headingLevel = 3,
+}: {
+  project: Project;
+  className?: string;
+  /** 3 under a section heading (homepage), 2 when the cards follow the page h1. */
+  headingLevel?: 2 | 3;
+}) {
   const service = getService(project.service);
+  const Heading = headingLevel === 2 ? "h2" : "h3";
+  const SubHeading = headingLevel === 2 ? "h3" : "h4";
 
   return (
     <article className={cn("bg-paper p-7 sm:p-9", className)}>
@@ -35,7 +46,7 @@ export function ProjectCard({ project, className }: { project: Project; classNam
         {project.demo ? <DemoBadge /> : null}
       </div>
 
-      <h3 className="mt-7 text-h2 font-semibold tracking-tight">{project.name}</h3>
+      <Heading className="mt-7 text-h2 font-semibold tracking-tight">{project.name}</Heading>
       <p className="mt-3 max-w-xl text-lead text-muted">{project.summary}</p>
 
       <ul className="mt-7 flex flex-wrap gap-2">
@@ -71,17 +82,17 @@ export function ProjectCard({ project, className }: { project: Project; classNam
 
         <div className="mt-7 grid gap-8 sm:grid-cols-2">
           <div>
-            <h4 className="font-mono text-label uppercase text-faint">Problema</h4>
+            <SubHeading className="font-mono text-label uppercase text-faint">Problema</SubHeading>
             <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">{project.problem}</p>
           </div>
           <div>
-            <h4 className="font-mono text-label uppercase text-faint">Soluția</h4>
+            <SubHeading className="font-mono text-label uppercase text-faint">Soluția</SubHeading>
             <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">{project.solution}</p>
           </div>
         </div>
 
         <div className="mt-8">
-          <h4 className="font-mono text-label uppercase text-faint">Ce include</h4>
+          <SubHeading className="font-mono text-label uppercase text-faint">Ce include</SubHeading>
           <ul className="mt-3 grid gap-2.5 sm:grid-cols-2">
             {project.scope.map((item) => (
               <li key={item} className="flex gap-3 text-[0.9375rem] leading-relaxed text-muted">

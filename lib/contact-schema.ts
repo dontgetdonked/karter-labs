@@ -65,8 +65,12 @@ export const contactSchema = z.object({
     .min(20, "Descrie proiectul în cel puțin 20 de caractere.")
     .max(4000, "Descrierea este prea lungă (maximum 4000 de caractere)."),
 
-  /** Honeypot. Bots fill every field; humans never see this one. */
-  website: z.literal("").optional(),
+  /**
+   * Honeypot. Bots fill every field; humans never see this one.
+   * Deliberately permissive so a filled value passes validation and is dropped
+   * silently by the API route — a 422 here would tell the bot what to omit.
+   */
+  website: z.string().max(200).optional(),
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;

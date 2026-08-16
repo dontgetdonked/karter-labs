@@ -30,7 +30,7 @@ export default function ProjectsPage() {
           <div className="grid gap-px">
             {projects.map((project, index) => (
               <Reveal key={project.slug} delay={index * 60}>
-                <ProjectCard project={project} className="h-full" />
+                <ProjectCard project={project} headingLevel={2} className="h-full" />
               </Reveal>
             ))}
           </div>

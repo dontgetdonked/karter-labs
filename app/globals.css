@@ -1,26 +1,186 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ==========================================================================
+   Karter Labs — design tokens
+   Monochrome only: paper, ink and a controlled ramp of greys.
+   ========================================================================== */
+
+@theme {
+  /* Surfaces & ink */
+  --color-paper: #ffffff;
+  --color-paper-2: #fafafa;
+  --color-surface: #f4f4f5;
+  --color-line: #e6e6e9;
+  --color-line-strong: #d2d2d7;
+  --color-faint: #a1a1aa;
+  --color-muted: #6d6d76;
+  --color-ink-2: #18181b;
+  --color-ink: #09090b;
+
+  /* On-ink (inverted sections) */
+  --color-ink-line: #26262b;
+  --color-ink-line-strong: #3a3a41;
+  --color-ink-muted: #a4a4ad;
+
+  /* Fluid type scale */
+  --text-display: clamp(2.5rem, 6.4vw, 5rem);
+  --text-display--line-height: 0.96;
+  --text-display--letter-spacing: -0.035em;
+
+  --text-h1: clamp(2.125rem, 4.4vw, 3.5rem);
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.03em;
+
+  --text-h2: clamp(1.75rem, 3.2vw, 2.75rem);
+  --text-h2--line-height: 1.06;
+  --text-h2--letter-spacing: -0.025em;
+
+  --text-h3: clamp(1.25rem, 1.8vw, 1.5rem);
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.015em;
+
+  --text-lead: clamp(1.0625rem, 1.5vw, 1.25rem);
+  --text-lead--line-height: 1.55;
+
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.14em;
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono-jetbrains);
 }
 
-@media (prefers-color-scheme: dark) {
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: light;
+  }
+
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  /* Inverted sections keep focus rings visible. */
+  .on-ink :focus-visible {
+    outline-color: var(--color-paper);
+  }
+
+  /* Native accordion marker is replaced by our own chevron. */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary {
+    list-style: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+
+@layer utilities {
+  /* Faint blueprint grid — technical texture, never loud. */
+  .bg-blueprint {
+    background-image:
+      linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+
+  .bg-blueprint-ink {
+    background-image:
+      linear-gradient(to right, var(--color-ink-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-ink-line) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+
+  /* Fades the grid out so it never competes with the type. */
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 100%);
+  }
+
+  .text-balance-tight {
+    text-wrap: balance;
+  }
+
+  /* Horizontal strips scroll on small screens without showing a bar. */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Reveal — one fade + short rise, driven by IntersectionObserver.
+   Content is visible by default for crawlers and for no-JS users
+   (see the <noscript> override in app/layout.tsx).
+   ========================================================================== */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s var(--ease-out-soft),
+    transform 0.6s var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================================================
+   Reduced motion — kill every transition, animation and reveal offset.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

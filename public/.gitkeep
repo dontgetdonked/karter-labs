@@ -1,0 +1,2 @@
+# Static assets. Drop the official logo here as `logo.svg` and switch
+# components/logo.tsx over to next/image (see the comment in that file).
